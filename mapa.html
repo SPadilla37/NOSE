@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Ubicación del usuario en tiempo real</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v3.11.0/mapbox-gl.js"></script>
+</head>
+<body>
+  <div id="map"></div>
+  <button class="toggle-button" onclick="toggleInfoPanel()">☰</button>
+  <div id="info-panel" class="info-panel">
+    <div class="welcome-message" id="welcome-message">
+      Prueba de funcionamiento de localización en tiempo real
+    </div>
+    <hr>
+    <h4>Tu ubicación</h4>
+    <p id="location-info"></p>
+    <hr>
+    <h4>Buscar otro usuario</h4>
+    <input type="text" id="search-user-id" placeholder="Introduce la ID del usuario">
+    <button onclick="startRealTimeTracking()">Localizar en tiempo real</button>
+    <p id="search-result"></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
