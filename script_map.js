@@ -436,3 +436,45 @@ if (destinoNombre) {
       }
     });
 }
+
+// --- MARCADORES DE CONDUCTORES EN TIEMPO REAL ---
+let conductorMarkers = {};
+function updateConductoresOnMap() {
+  fetch('/api/conductores-locations')
+    .then(res => res.json())
+    .then(conductores => {
+      // Elimina marcadores viejos
+      Object.values(conductorMarkers).forEach(marker => marker.remove());
+      conductorMarkers = {};
+      conductores.forEach(c => {
+        if (c.lat && c.lng) {
+          let marker = new mapboxgl.Marker({ color: 'red' })
+            .setLngLat([c.lng, c.lat])
+            .setPopup(new mapboxgl.Popup().setText('Conductor'))
+            .addTo(map);
+          conductorMarkers[c.user_id] = marker;
+        }
+      });
+    });
+}
+setInterval(updateConductoresOnMap, 5000);
+map.on('load', updateConductoresOnMap);
+
+// --- SI EL USUARIO ES CONDUCTOR, REPORTA SU UBICACIÓN ---
+if (window.USER_ROLE === 'conductor' && window.USER_ID) {
+  setInterval(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        fetch('/api/conductor-location', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            user_id: window.USER_ID,
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          })
+        });
+      });
+    }
+  }, 5000);
+}

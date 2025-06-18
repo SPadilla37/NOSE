@@ -8,6 +8,7 @@ import requests
 import os
 from bson import ObjectId
 from flask import send_from_directory
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'TU_SECRETO_AQUI'  # Cambia esto por una clave secreta segura
@@ -15,7 +16,7 @@ CORS(app, supports_credentials=True)
 
 # Cambia la configuración de sesión:
 app.config['SESSION_TYPE'] = 'mongodb'
-app.config['SESSION_MONGODB'] = MongoClient("mongodb+srv://angel:angelito01@usm.2jhpojj.mongodb.net/?retryWrites=true&w=majority&appName=USM")
+app.config['SESSION_MONGODB'] = MongoClient("mongodb+srv://padilla31661983:<db_password>@usm.qh90qid.mongodb.net/?retryWrites=true&w=majority&appName=USM")
 app.config['SESSION_MONGODB_DB'] = 'USM'
 app.config['SESSION_MONGODB_COLLECT'] = 'sessions'
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
@@ -32,8 +33,7 @@ app.config['MAIL_DEFAULT_SENDER'] = 'tu_correo@gmail.com'
 
 mail = Mail(app)
 
-client = MongoClient("mongodb+srv://angel:angelito01@usm.2jhpojj.mongodb.net/?retryWrites=true&w=majority&appName=USM")
-db = client.get_database("USM")
+client = MongoClient("mongodb+srv://padilla31661983:<db_password>@usm.qh90qid.mongodb.net/?retryWrites=true&w=majority&appName=USM")
 users_collection = db.usuarios
 
 FACULTADES = {
@@ -355,6 +355,35 @@ def confirmar_asistencia():
 
     return jsonify({'success': True, 'nuevo_total': nuevo_valor})
 
+# --- ENDPOINT: Guardar ubicación de conductor ---
+@app.route('/api/conductor-location', methods=['POST'])
+def update_conductor_location():
+    data = request.json
+    user_id = data.get('user_id')
+    lat = data.get('lat')
+    lng = data.get('lng')
+    if not user_id or lat is None or lng is None:
+        return jsonify({'error': 'Datos incompletos'}), 400
+
+    # Verifica que el usuario sea conductor
+    user = users_collection.find_one({'_id': ObjectId(user_id), 'rol': 'conductor'})
+    if not user:
+        return jsonify({'error': 'No autorizado'}), 403
+
+    db.conductor_locations.update_one(
+        {'user_id': user_id},
+        {'$set': {'lat': lat, 'lng': lng, 'timestamp': datetime.utcnow()}},
+        upsert=True
+    )
+    return jsonify({'success': True})
+
+# --- ENDPOINT: Obtener ubicaciones de todos los conductores ---
+@app.route('/api/conductores-locations', methods=['GET'])
+def get_conductores_locations():
+    conductores = list(users_collection.find({'rol': 'conductor'}))
+    ids = [str(c['_id']) for c in conductores]
+    ubicaciones = list(db.conductor_locations.find({'user_id': {'$in': ids}}, {'_id': 0}))
+    return jsonify(ubicaciones)
 
 if __name__ == '__main__':
     app.run(debug=True)
