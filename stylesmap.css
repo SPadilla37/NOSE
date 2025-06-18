@@ -67,21 +67,17 @@ body {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.5); /* Opcional: sombra */
 }
 
-.confirmar-asistencia-btn,
-.confirmar-asistencia-popup-btn {
-  background: #1976d2 !important;
-  color: #fff !important;
-  border: none;
-  border-radius: 8px;
-  font-size: 1em;
-  padding: 10px 24px;
-  cursor: pointer;
-  margin-top: 18px;
-  transition: background 0.2s;
-  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.08);
+.animated-popup .mapboxgl-popup-content {
+  animation: popup-fade-in 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.confirmar-asistencia-btn:hover,
-.confirmar-asistencia-popup-btn:hover {
-  background: #1251a3 !important;
+@keyframes popup-fade-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.7) translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }

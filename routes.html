@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Rutas Transporte</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@800&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --main-blue: #2563eb;
+      --main-blue-dark: #1e40af;
+      --main-bg: #f6f8fb;
+      --panel-bg: #fff;
+      --panel-shadow: 0 4px 24px 0 rgba(37,99,235,0.08), 0 1.5px 8px 0 rgba(0,0,0,0.07);
+      --panel-radius: 18px;
+      --text-main: #23223a;
+      --text-muted: #7c7c8a;
+      --divider: #e5eaf2;
+      --btn-bg: var(--main-blue);
+      --btn-bg-hover: var(--main-blue-dark);
+      --btn-text: #fff;
+      --btn-radius: 10px;
+      --arrow-blue: #2563eb;
+      --circle-bg: #e0eaff;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--main-bg);
+      font-family: 'Inter', Arial, sans-serif;
+      color: var(--text-main);
+      min-height: 100vh;
+      box-sizing: border-box;
+      overflow-x: hidden;
+    }
+    body {
+      overflow-x: hidden;
+    }
+    .barra-superior {
+      width: 100%;
+      background: #fff;
+      color: var(--main-blue);
+      padding: 0;
+      box-shadow: 0 2px 12px rgba(37,99,235,0.07);
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      border-bottom: 2px solid var(--divider);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 70px;
+      gap: 16px;
+    }
+    .nav-azul {
+      background: none;
+      color: var(--main-blue-dark);
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 900;
+      font-size: 2.1rem;
+      letter-spacing: 1.5px;
+      padding: 0;
+      margin-left: 300px;
+      flex-shrink: 0;
+      box-shadow: none;
+      border-radius: 0;
+    }
+    .nav-opciones {
+      display: flex;
+      gap: 10px;
+      margin-right: 32px;
+    }
+    .nav-opciones a {
+      color: var(--main-blue-dark);
+      text-decoration: none;
+      font-weight: 700;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-size: 1.08em;
+      padding: 10px 18px;
+      border-radius: 8px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nav-opciones a:hover,
+    .nav-opciones a.active {
+      background: var(--main-blue);
+      color: #fff;
+    }
+    .menu-dropdown {
+      display: none;
+    }
+    @media (max-width: 900px) {
+      .nav-azul {
+        font-size: 1.2rem;
+        padding: 8px 16px;
+        margin-left: 8px;
+      }
+      .nav-opciones {
+        gap: 4px;
+        margin-right: 8px;
+      }
+      .nav-opciones a {
+        font-size: 0.98em;
+        padding: 7px 10px;
+      }
+    }
+    @media (max-width: 600px) {
+      .nav-azul {
+        font-size: 1rem;
+        padding: 6px 8px;
+        margin-left: 4px;
+      }
+      .nav-opciones {
+        display: none;
+      }
+      .menu-dropdown {
+        display: block;
+        margin-right: 8px;
+      }
+    }
+    .scroll-area {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 110px 0 40px 0;
+      background: var(--main-bg);
+      min-height: 80vh;
+      box-sizing: border-box;
+    }
+    .contenedor-panel {
+      width: 100%;
+      max-width: 700px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      align-items: center;
+      justify-content: flex-start;
+      box-sizing: border-box;
+      padding: 0 12px;
+    }
+    .config-panel {
+      width: 100%;
+      background: var(--panel-bg);
+      border-radius: var(--panel-radius);
+      box-shadow: var(--panel-shadow);
+      border: none;
+      padding: 0;
+      transition: box-shadow 0.25s, background 0.25s, transform 0.18s;
+      cursor: pointer;
+      user-select: none;
+      box-sizing: border-box;
+      position: relative;
+      overflow: hidden;
+    }
+    .config-panel:not(:last-child) {
+      margin-bottom: 0;
+    }
+    .config-panel:hover, .config-panel.active {
+      box-shadow: 0 8px 32px 0 rgba(37,99,235,0.13), 0 2px 12px 0 rgba(0,0,0,0.10);
+      background: #f0f6ff;
+      transform: translateY(-2px) scale(1.01);
+    }
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 22px 28px 22px 20px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .panel-header .icon-circle {
+      background: var(--circle-bg);
+      color: var(--main-blue-dark);
+      font-weight: 700;
+      font-size: 1.15rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 16px;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.10);
+    }
+    .panel-header .titulo {
+      font-size: 1.18rem;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 800;
+      color: var(--main-blue-dark);
+      letter-spacing: 1px;
+      flex: 1;
+      text-align: left;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel-header .arrow {
+      font-size: 1.5rem;
+      color: var(--main-blue);
+      transition: transform 0.3s;
+      margin-left: 18px;
+    }
+    .config-panel.active .panel-header .arrow {
+      transform: rotate(90deg);
+    }
+    .info {
+      display: grid;
+      grid-template-rows: 0fr;
+      opacity: 0;
+      transition: grid-template-rows 0.4s, opacity 0.3s;
+      background: #f0f6ff;
+      padding: 0 28px;
+    }
+    .config-panel.active .info {
+      grid-template-rows: 1fr;
+      opacity: 1;
+      padding-bottom: 20px;
+    }
+    .info-content {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+      font-size: 1.05rem;
+      color: var(--text-main);
+      width: 100%;
+      align-items: flex-start;
+      animation: fadeIn 0.3s;
+      justify-content: center;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 1.03rem;
+      font-weight: 600;
+      color: var(--main-blue-dark);
+      background: transparent;
+    }
+    .info-label {
+      min-width: 120px;
+      color: var(--text-muted);
+      font-weight: 500;
+      font-size: 1.01rem;
+    }
+    .botones-ruta {
+      display: flex;
+      flex-direction: row;
+      gap: 12px;
+      margin-top: 14px;
+      width: 100%;
+    }
+    .como-llegar-btn, .confirmar-asistencia-btn {
+      padding: 10px 22px;
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      border: none;
+      border-radius: var(--btn-radius);
+      font-size: 1em;
+      font-family: 'Montserrat', Arial, sans-serif;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.18s, transform 0.13s;
+      box-shadow: 0 2px 8px rgba(37,99,235,0.06);
+      outline: none;
+      letter-spacing: 1px;
+    }
+    .como-llegar-btn:hover {
+      background: var(--btn-bg-hover);
+      transform: scale(1.04);
+    }
+    .confirmar-asistencia-btn {
+      background: #e5eaf2;
+      color: var(--main-blue-dark);
+    }
+    .confirmar-asistencia-btn:hover {
+      background: #c7d7f7;
+      color: var(--main-blue);
+      transform: scale(1.04);
+    }
+    @media (max-width: 900px) {
+      .contenedor-panel {
+        gap: 12px;
+        padding: 0 2vw;
+      }
+      .panel-header {
+        padding: 14px 8px 14px 8px;
+      }
+      .info, .config-panel.active .info {
+        padding: 0 8px;
+      }
+    }
+    @media (max-width: 600px) {
+      .barra-superior .titulo {
+        margin-left: 8px;
+        font-size: 1.1rem;
+      }
+      .scroll-area {
+        padding-top: 4px;
+      }
+      .contenedor-panel {
+        gap: 6px;
+        padding: 0 2vw;
+      }
+      .panel-header {
+        padding: 8px 4px 8px 4px;
+      }
+      .panel-header .icon-circle {
+        width: 24px;
+        height: 24px;
+        font-size: 0.95rem;
+        margin-right: 6px;
+      }
+      .panel-header .titulo {
+        font-size: 0.98rem;
+      }
+      .info-content {
+        font-size: 0.92rem;
+      }
+      .botones-ruta {
+        gap: 6px;
+        margin-top: 6px;
+      }
+      .como-llegar-btn, .confirmar-asistencia-btn {
+        font-size: 0.93em;
+        padding: 6px 8px;
+      }
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px);}
+      to { opacity: 1; transform: translateY(0);}
+    }
+  </style>
+</head>
+<body>
+  <div class="barra-superior">
+    <div class="nav-azul">
+      RUTAS
+    </div>
+    <nav class="nav-opciones" id="navOpciones">
+      <a href="#" onclick="filtrarRutas('urbanas');return false;">Rutas urbanas</a>
+      <a href="#" onclick="filtrarRutas('baruta');return false;">Baruta</a>
+      <a href="#" onclick="filtrarRutas('la_guaira');return false;">La Guaira</a>
+      <a href="#" onclick="filtrarRutas('guarenas');return false;">Guarenas Guatire</a>
+      <a href="#" onclick="filtrarRutas('los_teques');return false;">Los Teques</a>
+    </nav>
+    <div class="menu-dropdown" id="menuDropdown">
+      <button class="menu-btn" id="menuBtn">
+        Opciones
+        <span class="arrow">&#9660;</span>
+      </button>
+      <div class="menu-dropdown-content" id="menuDropdownContent">
+        <a href="#" onclick="filtrarRutas('urbanas');return false;">Rutas urbanas</a>
+        <a href="#" onclick="filtrarRutas('baruta');return false;">Baruta</a>
+        <a href="#" onclick="filtrarRutas('la_guaira');return false;">La Guaira</a>
+        <a href="#" onclick="filtrarRutas('guarenas');return false;">Guarenas Guatire</a>
+        <a href="#" onclick="filtrarRutas('los_teques');return false;">Los Teques</a>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-area">
+    <div class="contenedor-panel" id="contenedor-panel">
+      <!-- Aquí se cargarán las rutas dinámicamente -->
+    </div>
+  </div>
+  <script>
+    // Dropdown menu para móvil
+    const menuDropdown = document.getElementById('menuDropdown');
+    const menuBtn = document.getElementById('menuBtn');
+    menuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      menuDropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', function() {
+      menuDropdown.classList.remove('open');
+    });
+
+    // Filtro de rutas (puedes adaptar la lógica según tu API)
+    let rutasGlobal = [];
+    function filtrarRutas(tipo) {
+      let rutasFiltradas = rutasGlobal;
+      switch(tipo) {
+        case 'urbanas':
+          rutasFiltradas = rutasGlobal.filter(r =>
+            r.nombre.toLowerCase().includes('california') ||
+            r.nombre.toLowerCase().includes('plaza')
+          );
+          break;
+        case 'baruta':
+          rutasFiltradas = rutasGlobal.filter(r => r.nombre.toLowerCase().includes('concresa'));
+          break;
+        case 'la_guaira':
+          rutasFiltradas = rutasGlobal.filter(r => r.nombre.toLowerCase().includes('guaira'));
+          break;
+        case 'guarenas':
+          rutasFiltradas = rutasGlobal.filter(r => r.nombre.toLowerCase().includes('guarenas') || r.nombre.toLowerCase().includes('guatire'));
+          break;
+        case 'los_teques':
+          rutasFiltradas = rutasGlobal.filter(r => r.nombre.toLowerCase().includes('teques'));
+          break;
+      }
+      renderizarRutas(rutasFiltradas);
+    }
+
+    const coloresParadas = [
+      '#2563eb', // Azul
+      '#eab308', // Amarillo
+      '#10b981', // Verde
+      '#ef4444', // Rojo
+      '#a21caf', // Morado
+      '#f97316', // Naranja
+      '#0ea5e9', // Celeste
+      '#f43f5e', // Rosado
+      '#22d3ee', // Turquesa
+      '#64748b'  // Gris
+    ];
+
+    // Asignar número único a cada parada por nombre
+    let mapaNumerosParadas = {};
+    let mapaColoresParadas = {};
+    function asignarNumerosYColores(rutas) {
+      let contador = 1;
+      rutas.forEach(ruta => {
+        let nombre = ruta.nombre.trim().toLowerCase();
+        if (!mapaNumerosParadas[nombre]) {
+          mapaNumerosParadas[nombre] = contador++;
+        }
+      });
+      // Asignar color por número
+      Object.entries(mapaNumerosParadas).forEach(([nombre, num]) => {
+        mapaColoresParadas[nombre] = coloresParadas[(num - 1) % coloresParadas.length];
+      });
+    }
+
+    function renderizarRutas(rutas) {
+      const contenedor = document.getElementById('contenedor-panel');
+      contenedor.innerHTML = '';
+      rutas.forEach((ruta, idx) => {
+        let nombreParada = ruta.nombre.trim().toLowerCase();
+        let num = mapaNumerosParadas[nombreParada];
+        let color = mapaColoresParadas[nombreParada];
+        let origen = ruta.nombre.trim();
+        let destino = "USM";
+
+        // Panel: Parada -> USM
+        const panelIda = document.createElement('div');
+        panelIda.className = 'config-panel';
+        panelIda.innerHTML = `
+          <div class="panel-header">
+            <span class="icon-circle" style="background:${color}; color:#fff;">${num}</span>
+            <span class="titulo">
+              <span style="font-weight:700">${origen}</span>
+              <span style="margin: 0 10px; color: var(--arrow-blue); font-size:1.3em;">&#8594;</span>
+              <span style="font-weight:700">${destino}</span>
+            </span>
+            <span class="arrow">&#9660;</span>
+          </div>
+          <div class="info">
+            <div class="info-content">
+              <div class="info-item">
+                <span class="info-label">Precio:</span>
+                <span>${ruta.precio}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Hora de salida:</span>
+                <span>${ruta.hora_salida}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Hasta qué hora trabajan:</span>
+                <span>${ruta.hora_fin}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Ubicación:</span>
+                <span>${ruta.ubicacion}</span>
+              </div>
+              <div class="botones-ruta">
+                <button class="como-llegar-btn" id="como-llegar-ruta-${idx}-ida">Cómo llegar</button>
+                <button class="confirmar-asistencia-btn" id="confirmar-asistencia-${idx}-ida">Confirmar asistencia</button>
+              </div>
+            </div>
+          </div>
+        `;
+        contenedor.appendChild(panelIda);
+
+        // Panel: USM -> Parada
+        const panelVuelta = document.createElement('div');
+        panelVuelta.className = 'config-panel';
+        panelVuelta.innerHTML = `
+          <div class="panel-header">
+            <span class="icon-circle" style="background:${color}; color:#fff;">${num}</span>
+            <span class="titulo">
+              <span style="font-weight:700">${destino}</span>
+              <span style="margin: 0 10px; color: var(--arrow-blue); font-size:1.3em;">&#8594;</span>
+              <span style="font-weight:700">${origen}</span>
+            </span>
+            <span class="arrow">&#9660;</span>
+          </div>
+          <div class="info">
+            <div class="info-content">
+              <div class="info-item">
+                <span class="info-label">Precio:</span>
+                <span>${ruta.precio}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Hora de salida:</span>
+                <span>${ruta.hora_salida}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Hasta qué hora trabajan:</span>
+                <span>${ruta.hora_fin}</span>
+              </div>
+              <div class="info-item">
+                <span class="info-label">Ubicación:</span>
+                <span>${ruta.ubicacion}</span>
+              </div>
+              <div class="botones-ruta">
+                <button class="como-llegar-btn" id="como-llegar-ruta-${idx}-vuelta">Cómo llegar</button>
+                <button class="confirmar-asistencia-btn" id="confirmar-asistencia-${idx}-vuelta">Confirmar asistencia</button>
+              </div>
+            </div>
+          </div>
+        `;
+        contenedor.appendChild(panelVuelta);
+
+        // Eventos para panelIda
+        panelIda.querySelector('.panel-header').addEventListener('click', function(e) {
+          if (panelIda.classList.contains('active')) {
+            panelIda.classList.remove('active');
+          } else {
+            document.querySelectorAll('.config-panel').forEach(p => p.classList.remove('active'));
+            panelIda.classList.add('active');
+          }
+        });
+        panelIda.querySelector('.como-llegar-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          localStorage.setItem('showRouteTo', origen);
+          window.location.href = 'mapa.html';
+        });
+        // NUEVO: Confirmar asistencia con bloqueo y feedback
+        panelIda.querySelector('.confirmar-asistencia-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          const btnIda = this;
+          const key = `asistencia_${origen}_ida`;
+          const lastTime = localStorage.getItem(key);
+          const now = Date.now();
+          if (lastTime && now - parseInt(lastTime) < 10 * 60 * 1000) { // 10 minutos
+              btnIda.disabled = true;
+              btnIda.textContent = "Ya confirmaste (espera 10 min)";
+              setTimeout(() => {
+                  btnIda.disabled = false;
+                  btnIda.textContent = "Confirmar asistencia";
+              }, 2000);
+              return;
+          }
+          btnIda.disabled = true;
+          btnIda.textContent = "Confirmado ✔";
+          fetch('https://usm-proyecto.onrender.com/confirmar-asistencia', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                  nombre_ruta: origen,
+                  sentido: 'ida'
+              })
+          })
+          .then(res => res.json())
+          .then(data => {
+              if (data.success) {
+                  // Notificación: solo si no existe una igual en los últimos 10 min
+                  let notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                  const existe = notificaciones.some(n =>
+                      n.titulo === 'Asistencia confirmada' &&
+                      n.mensaje.includes(origen) &&
+                      n.mensaje.includes('(ida)') &&
+                      (new Date() - new Date(n.fecha)) < 10 * 60 * 1000
+                  );
+                  if (!existe) {
+                      notificaciones.push({
+                          autor: "USM Transporte",
+                          titulo: `Asistencia confirmada`,
+                          mensaje: `¡Has confirmado tu asistencia a la estación <b style="color:${color}">${origen}</b> (ida)!`,
+                          fecha: new Date().toLocaleString(),
+                          color: color,
+                          leida: false
+                      });
+                      localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+                  }
+                  localStorage.setItem(key, now.toString());
+                  btnIda.textContent = "Confirmado ✔";
+                  setTimeout(() => {
+                      btnIda.disabled = false;
+                      btnIda.textContent = "Confirmar asistencia";
+                  }, 10 * 60 * 1000);
+              } else {
+                  btnIda.disabled = false;
+                  btnIda.textContent = "Confirmar asistencia";
+                  alert(data.error || 'Error al confirmar asistencia');
+              }
+          })
+          .catch(() => {
+              btnIda.disabled = false;
+              btnIda.textContent = "Confirmar asistencia";
+              alert('Error de red');
+          });
+        });
+
+        // Eventos para panelVuelta
+        panelVuelta.querySelector('.panel-header').addEventListener('click', function(e) {
+          if (panelVuelta.classList.contains('active')) {
+            panelVuelta.classList.remove('active');
+          } else {
+            document.querySelectorAll('.config-panel').forEach(p => p.classList.remove('active'));
+            panelVuelta.classList.add('active');
+          }
+        });
+        panelVuelta.querySelector('.como-llegar-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          localStorage.setItem('showRouteTo', destino);
+          window.location.href = 'mapa.html';
+        });
+        // NUEVO: Confirmar asistencia con bloqueo y feedback
+        panelVuelta.querySelector('.confirmar-asistencia-btn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          const btnVuelta = this;
+          const key = `asistencia_${origen}_vuelta`;
+          const lastTime = localStorage.getItem(key);
+          const now = Date.now();
+          if (lastTime && now - parseInt(lastTime) < 10 * 60 * 1000) { // 10 minutos
+              btnVuelta.disabled = true;
+              btnVuelta.textContent = "Ya confirmaste (espera 10 min)";
+              setTimeout(() => {
+                  btnVuelta.disabled = false;
+                  btnVuelta.textContent = "Confirmar asistencia";
+              }, 2000);
+              return;
+          }
+          btnVuelta.disabled = true;
+          btnVuelta.textContent = "Confirmado ✔";
+          fetch('https://usm-proyecto.onrender.com/confirmar-asistencia', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              credentials: 'include',
+              body: JSON.stringify({
+                  nombre_ruta: origen,
+                  sentido: 'vuelta'
+              })
+          })
+          .then(res => res.json())
+          .then(data => {
+              if (data.success) {
+                  let notificaciones = JSON.parse(localStorage.getItem('notificaciones') || '[]');
+                  const existe = notificaciones.some(n =>
+                      n.titulo === 'Asistencia confirmada' &&
+                      n.mensaje.includes(origen) &&
+                      n.mensaje.includes('(vuelta)') &&
+                      (new Date() - new Date(n.fecha)) < 10 * 60 * 1000
+                  );
+                  if (!existe) {
+                      notificaciones.push({
+                          autor: "USM Transporte",
+                          titulo: `Asistencia confirmada`,
+                          mensaje: `¡Has confirmado tu asistencia a la estación <b style="color:${color}">${origen}</b> (vuelta)!`,
+                          fecha: new Date().toLocaleString(),
+                          color: color,
+                          leida: false
+                      });
+                      localStorage.setItem('notificaciones', JSON.stringify(notificaciones));
+                  }
+                  localStorage.setItem(key, now.toString());
+                  btnVuelta.textContent = "Confirmado ✔";
+                  setTimeout(() => {
+                      btnVuelta.disabled = false;
+                      btnVuelta.textContent = "Confirmar asistencia";
+                  }, 10 * 60 * 1000);
+              } else {
+                  btnVuelta.disabled = false;
+                  btnVuelta.textContent = "Confirmar asistencia";
+                  alert(data.error || 'Error al confirmar asistencia');
+              }
+          })
+          .catch(() => {
+              btnVuelta.disabled = false;
+              btnVuelta.textContent = "Confirmar asistencia";
+              alert('Error de red');
+          });
+        });
+      });
+    }
+
+    fetch('https://usm-proyecto.onrender.com/api/rutas')
+      .then(res => res.json())
+      .then(rutas => {
+        rutasGlobal = rutas;
+        asignarNumerosYColores(rutasGlobal);
+        renderizarRutas(rutas);
+      });
+  </script>
+</body>
+</html>

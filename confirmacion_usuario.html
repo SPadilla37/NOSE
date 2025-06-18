@@ -143,6 +143,7 @@
       <div class="form-row full-width" id="email-container" style="display: none;">
         <input type="email" id="email-input" name="email" placeholder="Introduce tu correo electrónico" required>
       </div>
+      <div id="unique-error" style="color: red; margin-top: 10px; display: none;"></div>
       <div class="buttons-container">
         <button type="button" class="back-button">← Atrás</button>
         <button type="button" class="next-button" id="next-button">Siguiente →</button>
@@ -158,15 +159,14 @@
   // Referencias a los contenedores de correo y teléfono
   const emailContainer = document.getElementById('email-container');
   const phoneInputContainer = document.getElementById('phone-input-container');
+  const uniqueError = document.getElementById('unique-error');
 
   // Verifica si se recibió un correo o un número de teléfono
   if (email) {
-    console.log(`Confirmación para el correo: ${email}`);
     // Mostrar el campo para ingresar el número de teléfono
     emailContainer.style.display = 'none';
     phoneInputContainer.style.display = 'flex';
   } else if (phone) {
-    console.log(`Confirmación para el número de teléfono: ${phone}`);
     // Mostrar el campo para ingresar el correo
     phoneInputContainer.style.display = 'none';
     emailContainer.style.display = 'block';
@@ -175,38 +175,61 @@
     window.location.href = 'login.html';
   }
 
-  // Redirige a register.html al hacer clic en "Siguiente"
-  document.getElementById('next-button').addEventListener('click', () => {
+  // Botón de "Siguiente"
+  document.getElementById('next-button').addEventListener('click', async () => {
     const firstName = document.getElementById('first-name').value.trim();
     const lastName = document.getElementById('last-name').value.trim();
     const emailValue = document.getElementById('email-input').value.trim();
     const phoneValue = document.getElementById('phone-number').value.trim();
+    const errorDiv = document.getElementById('unique-error');
 
-    // Validar los campos dinámicos
-    if (email && !phoneValue) {
-      alert('Por favor, introduce un número de teléfono válido.');
+    // Verifica que haya algo escrito
+    if (!emailValue && !phoneValue) {
+      errorDiv.textContent = 'Debes ingresar un correo o número de teléfono.';
+      errorDiv.style.display = 'block';
       return;
     }
-    if (phone && !emailValue) {
-      alert('Por favor, introduce un correo electrónico válido.');
+
+    // Verificar unicidad en el backend
+    let exists = false;
+    try {
+      const res = await fetch('https://usm-proyecto.onrender.com/check-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: emailValue || null,
+          phone: phoneValue || null
+        })
+      });
+      const data = await res.json();
+      exists = data.exists;
+    } catch (err) {
+      errorDiv.textContent = 'Error al verificar la información. Intenta de nuevo.';
+      errorDiv.style.display = 'block';
       return;
     }
 
-    // Redirigir a la siguiente página con los datos ingresados
-    const queryParams = new URLSearchParams({
-      firstName,
-      lastName,
-      email: email || emailValue,
-      phone: phone || phoneValue,
-    }).toString();
+    if (exists) {
+      errorDiv.textContent = emailValue ? 'Ese correo electrónico ya está registrado.' : 'Ese número de teléfono ya está registrado.';
+      errorDiv.style.display = 'block';
+      return;
+    } else {
+      errorDiv.style.display = 'none';
+    }
 
-    window.location.href = `register.html?${queryParams}`;
+    // Si no existe, puedes continuar con el registro
+    localStorage.setItem('nombre', firstName);
+    localStorage.setItem('apellido', lastName);
+    localStorage.setItem('telefono', phone || phoneValue);
+    localStorage.setItem('email', email || emailValue);
+
+    window.location.href = 'register.html';
   });
 
   // Botón de "Atrás"
   document.querySelector('.back-button').addEventListener('click', function () {
     window.history.back();
   });
-</script>
+  </script>
 </body>
 </html>

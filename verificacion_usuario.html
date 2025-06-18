@@ -112,12 +112,10 @@
     <button id="resend-button" style="margin-top: 10px;">Reenviar código</button>
   </div>
   <script>
-  // Obtén los parámetros de la URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const email = urlParams.get('email');
-  const phone = urlParams.get('phone');
+  // Obtén email o teléfono desde localStorage
+  const email = localStorage.getItem('email');
+  const phone = localStorage.getItem('telefono');
 
-  // Muestra si el usuario ingresó con correo o número de teléfono
   const verificationInfo = document.getElementById('verification-info');
   if (email) {
     verificationInfo.textContent = `Se envió un código de verificación a tu correo: ${email}`;
@@ -166,7 +164,7 @@
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/verify-code', {
+      const response = await fetch('https://usm-proyecto.onrender.com/verify-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -220,7 +218,7 @@
     }, 1000);
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/send-code', {
+      const response = await fetch('https://usm-proyecto.onrender.com/send-code', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

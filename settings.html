@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración de Perfil</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --main-bg: #eaf1fb;
+            --main-dark: #1a237e;
+            --main-blue: #2563eb;
+            --main-blue-dark: #1746a0;
+            --main-gray: #e0e0e0;
+            --main-white: #fff;
+            --shadow: 0 4px 24px 0 rgba(37,99,235,0.10), 0 1.5px 8px 0 rgba(0,0,0,0.07);
+            --radius: 20px;
+            --anim-fast: 0.5s cubic-bezier(.4,0,.2,1);
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            background: var(--main-bg);
+            font-family: 'Inter', Arial, sans-serif;
+            color: var(--main-dark);
+            min-height: 100vh;
+            box-sizing: border-box;
+            animation: fadeInBg 1.2s;
+            overflow-x: hidden;
+            width: 100vw;
+        }
+        @keyframes fadeInBg {
+            from { background: #fff; }
+            to { background: var(--main-bg);}
+        }
+        .hero {
+            width: 100vw;
+            background: linear-gradient(90deg, var(--main-blue-dark) 0%, var(--main-blue) 100%);
+            color: #fff;
+            padding: 56px 0 36px 0;
+            text-align: center;
+            box-shadow: 0 4px 24px #2563eb22;
+            animation: fadeInDown var(--anim-fast);
+        }
+        .hero-title {
+            font-size: 2.7em;
+            font-weight: 900;
+            margin-bottom: 8px;
+            letter-spacing: -1px;
+            font-family: 'Montserrat', Arial, sans-serif;
+            text-shadow: 0 2px 12px #2563eb33;
+        }
+        .hero-desc {
+            font-size: 1.18em;
+            font-weight: 400;
+            color: #e0e0e0;
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        .main-flex {
+            display: flex;
+            flex-direction: row;
+            max-width: 1100px;
+            margin: 40px auto 0 auto;
+            gap: 40px;
+            align-items: flex-start;
+            padding: 0 24px;
+            animation: fadeInUp var(--anim-fast);
+        }
+        .preview-card {
+            background: var(--main-white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 36px 24px 28px 24px;
+            min-width: 270px;
+            max-width: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 0;
+            border-top: 7px solid var(--main-blue);
+            transition: border-color 0.2s, box-shadow 0.2s;
+            position: relative;
+            animation: fadeInUp 0.8s 0.2s backwards;
+        }
+        .preview-card:hover {
+            box-shadow: 0 8px 32px #2563eb33;
+            border-top: 7px solid var(--main-blue-dark);
+        }
+        .preview-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #fff;
+            object-fit: cover;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 8px #2563eb22;
+            border: 5px solid var(--main-blue);
+            transition: border 0.2s;
+            position: relative;
+        }
+        .avatar-upload-btn {
+            position: absolute;
+            top: 110px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--main-blue);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #2563eb22;
+            transition: background 0.2s;
+        }
+        .avatar-upload-btn:hover {
+            background: var(--main-blue-dark);
+        }
+        .preview-name {
+            font-size: 1.35em;
+            font-weight: 800;
+            margin-bottom: 2px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            color: var(--main-blue-dark);
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .preview-about {
+            color: #555;
+            font-size: 1.05em;
+            text-align: center;
+            margin-bottom: 8px;
+            max-width: 200px;
+            word-break: break-word;
+        }
+        .form-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+        .section {
+            background: var(--main-white);
+            border-radius: var(--radius);
+            box-shadow: 0 2px 12px #2563eb11;
+            padding: 28px 24px;
+            margin-bottom: 0;
+            width: 100%;
+            transition: box-shadow 0.2s;
+            animation: fadeInUp 0.8s 0.3s backwards;
+        }
+        .section:hover {
+            box-shadow: 0 6px 24px #2563eb22;
+        }
+        .section-title {
+            font-size: 1.15em;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: var(--main-blue-dark);
+            letter-spacing: -0.5px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        label {
+            display: block;
+            margin-bottom: 7px;
+            font-weight: 600;
+            font-size: 1.05em;
+            letter-spacing: -0.5px;
+            font-family: 'Montserrat', Arial, sans-serif;
+            color: var(--main-blue-dark);
+        }
+        input[type="text"], input[type="email"], input[type="tel"], textarea {
+            width: 70%;
+            padding: 14px 16px;
+            border-radius: 9px;
+            border: 1.5px solid var(--main-blue-dark);
+            background: #fafafa;
+            color: var(--main-dark);
+            font-size: 1.13em;
+            margin-bottom: 2px;
+            resize: none;
+            transition: border 0.2s, box-shadow 0.2s;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            box-shadow: 0 1px 4px #2563eb11;
+        }
+        input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus, textarea:focus {
+            border: 1.5px solid var(--main-blue);
+            outline: none;
+            background: #fff;
+            box-shadow: 0 2px 8px #2563eb22;
+        }
+        input[readonly], textarea[readonly] {
+            background: #e0e0e0;
+            color: #888;
+            cursor: not-allowed;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        .btn {
+            background: var(--main-blue);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 28px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 1.08em;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: background 0.2s, box-shadow 0.2s, color 0.2s, border 0.2s;
+            box-shadow: 0 2px 8px #2563eb11;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .btn:hover {
+            background: #fff;
+            color: var(--main-blue-dark);
+            border: 1.5px solid var(--main-blue-dark);
+            box-shadow: 0 4px 16px #2563eb22;
+        }
+        .btn-secondary {
+            background: #e3eafc;
+            color: var(--main-blue-dark);
+            box-shadow: none;
+        }
+        .btn-secondary:hover {
+            background: var(--main-blue-dark);
+            color: #fff;
+        }
+        .btn-danger {
+            background: #e53935 !important;
+            color: #fff !important;
+        }
+        .about-desc {
+            color: #888;
+            font-size: 0.97em;
+            margin-bottom: 8px;
+        }
+        #closeBtn {
+            position:fixed;
+            top:24px;
+            right:32px;
+            z-index:2000;
+            background:transparent;
+            border:none;
+            font-size:2.2em;
+            cursor:pointer;
+            color:#fff;
+            transition:color 0.2s;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-weight: bold;
+            box-shadow: none;
+        }
+        #closeBtn:hover {
+            color: #e53935;
+            text-shadow: 0 2px 8px #e5393555;
+        }
+        /* Pestañas */
+        .settings-tabs {
+            display: flex;
+            gap: 12px;
+            margin: 32px auto 0 auto;
+            justify-content: center;
+            animation: fadeInUp 0.7s 0.1s backwards;
+        }
+        .settings-tab-btn {
+            background: #e3eafc;
+            color: #2563eb;
+            border: none;
+            border-radius: 8px 8px 0 0;
+            padding: 12px 32px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .settings-tab-btn.active {
+            background: var(--main-blue);
+            color: #fff;
+        }
+        @media (max-width: 600px) {
+            .settings-tabs {
+                flex-direction: column;
+                gap: 0;
+            }
+            .settings-tab-btn {
+                border-radius: 8px 8px 0 0;
+                width: 100%;
+                margin-bottom: 2px;
+            }
+        }
+        @media (max-width: 900px) {
+            .main-flex { flex-direction: column; align-items: stretch; }
+            .preview-card { margin: 0 auto 32px auto; max-width: 98vw; }
+            .form-container { max-width: 98vw; margin: 0 auto; }
+        }
+        @media (max-width: 600px) {
+            .main-flex { flex-direction: column; align-items: stretch; }
+            .preview-card { width: 100%; max-width: 100%; min-width: 0; margin-bottom: 24px; box-sizing: border-box; }
+            .form-container { padding: 0; }
+            .section { padding: 14px 4px; }
+            #closeBtn { top: 10px; right: 10px; font-size: 1.6em; }
+            .preview-avatar { width: 80px; height: 80px; }
+            .avatar-upload-btn { width: 28px; height: 28px; font-size: 1.1em; top: 70px; }
+        }
+        .preview-card, .section {
+            animation: fadeInUp 0.7s;
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        /* Horario */
+        .horario-container {
+            max-width: 850px;
+            margin: 40px auto 0 auto;
+            padding: 36px 28px 32px 28px;
+            background: #fafdff;
+            border-radius: 24px;
+            box-shadow: 0 6px 32px 0 rgba(37,99,235,0.13), 0 1.5px 8px 0 rgba(0,0,0,0.07);
+            animation: fadeInUp 0.9s 0.2s backwards;
+        }
+        .horario-title {
+            color: #2563eb;
+            text-align: center;
+            margin-bottom: 28px;
+            font-family: 'Montserrat', Arial, sans-serif;
+            font-size: 2em;
+            font-weight: 800;
+            letter-spacing: -1px;
+            text-shadow: 0 2px 8px #2563eb11;
+        }
+        .horario-form {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.7s 0.2s backwards;
+        }
+        .horario-form label {
+            font-weight: 600;
+            color: #2563eb;
+            font-size: 1.08em;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+        .horario-form select {
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: 1.5px solid #2563eb;
+            background: #f6f6fa;
+            color: #23223a;
+            font-size: 1.08em;
+            font-family: 'Inter', Arial, sans-serif;
+            box-shadow: 0 1px 4px #2563eb11;
+            transition: border 0.2s;
+            margin-top: 2px;
+        }
+        .horario-form select:focus {
+            border: 1.5px solid #1746a0;
+            outline: none;
+            background: #fff;
+        }
+        .horario-btn {
+            padding: 12px 32px;
+            font-size: 1.12em;
+            font-weight: 700;
+            border-radius: 8px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            box-shadow: 0 2px 8px #2563eb22;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+            margin-top: 18px;
+        }
+        .horario-btn:hover {
+            background: #fff;
+            color: #2563eb;
+            border: 1.5px solid #2563eb;
+        }
+        .horario-table-wrap {
+            overflow-x: auto;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px #2563eb11;
+            background: #fff;
+            animation: fadeInUp 0.8s 0.3s backwards;
+        }
+        .horario-table {
+            width: 100%;
+            min-width: 650px;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-family: 'Inter', Arial, sans-serif;
+            font-size: 1.05em;
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            margin: 0 auto;
+            table-layout: fixed;
+            animation: fadeInUp 1s 0.3s backwards;
+        }
+        .horario-table th, .horario-table td {
+            border: 1px solid #e0e0e0;
+            text-align: center;
+            vertical-align: middle;
+            width: 90px;
+            height: 48px;
+            max-width: 100px;
+            min-width: 70px;
+            font-size: 0.98em;
+            padding: 0;
+            transition: background 0.2s;
+        }
+        .horario-table th {
+            background: #e3eafc;
+            color: #2563eb;
+            font-weight: 700;
+            font-size: 1.08em;
+            letter-spacing: 0.5px;
+            height: 50px;
+            border-top: none;
+        }
+        .hora-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 6px 0;
+            font-size: 1.08em;
+        }
+        .hora-icon {
+            font-size: 1.15em;
+            opacity: 0.7;
+            margin-right: 2px;
+        }
+        .hora-inicio {
+            font-weight: 800;
+            color: #2563eb;
+            font-size: 1.08em;
+            letter-spacing: 0.5px;
+        }
+        .hora-sep {
+            color: #1746a0;
+            font-size: 1em;
+            font-weight: 600;
+            opacity: 0.7;
+            margin: 0 2px;
+        }
+        .hora-fin-pill {
+            background: #e3eafc;
+            color: #1746a0;
+            font-weight: 700;
+            border-radius: 12px;
+            padding: 2px 10px;
+            font-size: 0.98em;
+            margin-left: 2px;
+            box-shadow: 0 1px 4px #2563eb11;
+            border: 1px solid #d0e2ff;
+            display: inline-block;
+        }
+        .horario-table .hora {
+            background: #f6f6fa;
+            font-weight: 700;
+            color: #1746a0;
+            font-size: 1.04em;
+            min-width: 80px;
+            max-width: 90px;
+            width: 90px;
+            border-left: none;
+            padding: 0;
+            line-height: 1.1;
+        }
+        .hora-inicio {
+            display: block;
+            font-size: 1.13em;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .hora-fin {
+            display: block;
+            font-size: 0.98em;
+            font-weight: 600;
+            color: #1746a0;
+            opacity: 0.85;
+            margin-top: 0;
+        }
+        .horario-table .hora {
+            background: #f6f6fa;
+            font-weight: 700;
+            color: #1746a0;
+            font-size: 1.04em;
+            min-width: 80px;
+            max-width: 90px;
+            width: 90px;
+            border-left: none;
+            padding: 0;
+            line-height: 1.1;
+        }
+        .hora-inicio {
+            display: block;
+            font-size: 1.13em;
+            font-weight: 800;
+            color: #2563eb;
+            letter-spacing: 0.5px;
+            margin-bottom: 2px;
+        }
+        .hora-fin {
+            display: block;
+            font-size: 0.98em;
+            font-weight: 600;
+            color: #1746a0;
+            opacity: 0.85;
+            margin-top: 0;
+        }
+        .horario-table tr.alt {
+            background: #f3f7fd;
+        }
+        .horario-table tr:hover td {
+            background: #e3eafc;
+            transition: background 0.2s;
+        }
+        .horario-table th:first-child, .horario-table td:first-child {
+            border-left: none;
+        }
+        .horario-table th:last-child, .horario-table td:last-child {
+            border-right: none;
+        }
+        .horario-table tr:last-child td {
+            border-bottom: none;
+        }
+        .horario-hint {
+            color: #2563eb;
+            font-size: 1em;
+            text-align: center;
+            margin-top: 18px;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+        }
+        /* Encuesta parada */
+        .encuesta-parada {
+            margin: 32px 0 0 0;
+            max-width: 340px;
+            min-width: 220px;
+            background: #e3eafc;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px #2563eb11;
+            padding: 24px 18px;
+            animation: fadeInUp 1s 0.4s backwards;
+        }
+        .encuesta-parada label {
+            font-weight: 800;
+            color: #1746a0;
+            font-size: 1.18em;
+            display: block;
+            margin-bottom: 14px;
+            font-family: 'Montserrat', Arial, sans-serif;
+        }
+        .encuesta-parada select {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1.5px solid #2563eb;
+            font-size: 1.08em;
+            background: #fff;
+            margin-bottom: 18px;
+            font-family: 'Inter', Arial, sans-serif;
+        }
+        .encuesta-parada button {
+            margin-top: 8px;
+            padding: 10px 28px;
+            background: #2563eb;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1.08em;
+            cursor: pointer;
+            box-shadow: 0 2px 8px #2563eb22;
+            transition: background 0.2s, color 0.2s;
+        }
+        .encuesta-parada button:hover {
+            background: #fff;
+            color: #2563eb;
+            border: 1.5px solid #2563eb;
+        }
+        #encuesta-msg {
+            margin-top: 12px;
+            color: #22a06b;
+            font-weight: 700;
+            font-size: 1.08em;
+            text-align: center;
+            min-height: 24px;
+        }
+        @media (max-width: 900px) {
+            .horario-table th, .horario-table td { font-size: 0.93em; min-width: 50px; max-width: 70px; }
+            .horario-table .hora { min-width: 60px; max-width: 70px; }
+            .horario-container { padding: 12px 2vw; }
+        }
+        @media (max-width: 600px) {
+            .horario-title { font-size: 1.2em; }
+            .horario-form { gap: 8px; }
+            .horario-btn { padding: 8px 12px; font-size: 1em; }
+            .encuesta-parada { padding: 18px 4vw; }
+        }
+        .horario-form-pro {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+            background: #eaf1fb;
+            border-radius: 16px;
+            padding: 18px 24px 18px 24px;
+            box-shadow: 0 2px 12px #2563eb11;
+            animation: fadeInUp 0.7s 0.2s backwards;
+        }
+        .horario-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            min-width: 170px;
+        }
+        .horario-field label {
+            font-weight: 800;
+            color: #2563eb;
+            font-size: 1.13em;
+            margin-bottom: 2px;
+            font-family: 'Montserrat', Arial, sans-serif;
+            letter-spacing: 0.2px;
+        }
+        .horario-input-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        .horario-input-group input[type="text"] {
+            padding: 14px 18px;
+            border-radius: 10px;
+            border: 1.5px solid #2563eb;
+            background: #fff;
+            color: #1746a0;
+            font-size: 1.18em;
+            font-weight: 700;
+            width: 80px;
+            box-shadow: 0 1px 6px #2563eb11;
+            transition: border 0.2s, box-shadow 0.2s;
+            text-align: center;
+            outline: none;
+        }
+        .horario-input-group input[type="text"]:focus {
+            border: 2px solid #1746a0;
+            box-shadow: 0 2px 12px #2563eb22;
+            background: #fafdff;
+        }
+        .horario-input-group select {
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #2563eb;
+            background: #fff;
+            color: #1746a0;
+            font-size: 1.13em;
+            font-weight: 600;
+            box-shadow: 0 1px 6px #2563eb11;
+            transition: border 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+        .horario-input-group select:focus {
+            border: 2px solid #1746a0;
+            box-shadow: 0 2px 12px #2563eb22;
+            background: #fafdff;
+        }
+        .horario-btn-pro {
+            padding: 16px 38px;
+            font-size: 1.18em;
+            font-weight: 800;
+            border-radius: 12px;
+            background: linear-gradient(90deg, #2563eb 60%, #1746a0 100%);
+            color: #fff;
+            border: none;
+            box-shadow: 0 4px 16px #2563eb22;
+            cursor: pointer;
+            margin-top: 0;
+            margin-bottom: 0;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            font-family: 'Montserrat', Arial, sans-serif;
+            letter-spacing: 0.5px;
+        }
+        .horario-btn-pro:hover {
+            background: #fff;
+            color: #2563eb;
+            border: 2px solid #2563eb;
+            box-shadow: 0 6px 24px #2563eb33;
+        }
+        @media (max-width: 700px) {
+            .horario-form-pro {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 18px;
+                padding: 14px 6vw;
+            }
+            .horario-btn-pro {
+                width: 100%;
+                margin-top: 10px;
+            }
+        }
+        .color-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            box-shadow: 0 2px 8px #2563eb22;
+            cursor: pointer;
+            transition: border 0.2s, box-shadow 0.2s, transform 0.1s;
+            outline: 2px solid transparent;
+        }
+        .color-circle.selected {
+            border: 3px solid #2563eb;
+            outline: 2px solid #2563eb;
+            transform: scale(1.13);
+            box-shadow: 0 4px 16px #2563eb33;
+        }
+.celda-punto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 38px;
+}
+.punto-color {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    box-shadow: 0 1px 6px #0002;
+    border: 2.5px solid #fff;
+    display: inline-block;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+.punto-color:hover {
+    transform: scale(1.18);
+}
+.horario-table td.coloreada {
+    color: #fff !important;
+    font-weight: 700;
+    box-shadow: 0 2px 8px #2563eb22;
+}
+    </style>
+</head>
+<body>
+    <button id="closeBtn" title="Cerrar">&times;</button>
+    <div class="hero">
+        <div class="hero-title">Configuración de tu Perfil</div>
+        <div class="hero-desc">Personaliza tu información y visualiza cómo se verá tu perfil público.</div>
+    </div>
+    <!-- PESTAÑAS -->
+    <div class="settings-tabs">
+        <button class="settings-tab-btn active" id="tab-personal" onclick="mostrarTab('personal')">Información personal</button>
+        <button class="settings-tab-btn" id="tab-horario" onclick="mostrarTab('horario')">Horario</button>
+    </div>
+    <!-- CONTENIDO DE LAS PESTAÑAS -->
+    <div id="tab-content-personal">
+        <div class="main-flex">
+            <div>
+                <div class="preview-card">
+                    <img class="preview-avatar" id="miniAvatar" src="user_img.png" alt="Avatar">
+                    <button class="avatar-upload-btn" id="changeAvatarBtn" title="Cambiar avatar">&#9998;</button>
+                    <div class="preview-name" id="miniNombre"></div>
+                    <div class="preview-about" id="miniAbout"></div>
+                    <button class="btn btn-secondary" id="removeAvatarBtn" style="margin-top:10px;">Eliminar avatar</button>
+                </div>
+                <!-- AQUÍ PEGA LA ENCUESTA -->
+                <div class="encuesta-parada">
+                    <form id="form-parada">
+                        <label for="parada-bus">
+                            Generalmente, ¿qué parada de autobús usas?
+                        </label>
+                        <select id="parada-bus" name="parada-bus" required>
+                            <option value="" disabled selected>Seleccione una parada...</option>
+                        </select>
+                        <button type="submit" class="btn">
+                            Enviar respuesta
+                        </button>
+                        <div id="encuesta-msg"></div>
+                    </form>
+                </div>
+            </div>
+            <div class="form-container">
+                <div class="section">
+                    <div class="section-title">Información personal</div>
+                    <div class="form-group">
+                        <label for="nombre" style="flex:1;">Nombre</label>
+                        <input type="text" id="nombre" style="flex:2;">
+                        <button class="btn btn-secondary editar-btn" onclick="editarCampo(this)">Editar</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellido" style="flex:1;">Apellido</label>
+                        <input type="text" id="apellido" style="flex:2;">
+                        <button class="btn btn-secondary editar-btn" onclick="editarCampo(this)">Editar</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefono" style="flex:1;">Número de Teléfono</label>
+                        <input type="tel" id="telefono" style="flex:2;">
+                        <button class="btn btn-secondary editar-btn" onclick="editarCampo(this)">Editar</button>
+                    </div>
+                    <div class="form-group">
+                        <label for="correo" style="flex:1;">Correo Electrónico</label>
+                        <input type="email" id="correo" style="flex:2;">
+                        <button class="btn btn-secondary editar-btn" onclick="editarCampo(this)">Editar</button>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Datos académicos</div>
+                    <div class="form-group">
+                        <label for="facultad" style="flex:1;">Facultad</label>
+                        <input type="text" id="facultad" style="flex:2; background:#e0e0e0; color:#888; cursor:not-allowed;" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="carrera" style="flex:1;">Carrera</label>
+                        <input type="text" id="carrera" style="flex:2; background:#e0e0e0; color:#888; cursor:not-allowed;" readonly>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Dirección</div>
+                    <div class="form-group">
+                        <label for="direccion" style="flex:1;">Dirección</label>
+                        <input type="text" id="direccion" style="flex:2;" readonly>
+                        <button class="btn btn-secondary editar-btn" onclick="editarCampo(this)">Editar</button>
+                    </div>
+                </div>
+                <div class="section">
+                    <div class="section-title">Sobre mí</div>
+                    <div class="form-group">
+                        <label for="aboutMe" style="flex:1;">Sobre Mí</label>
+                        <textarea id="aboutMe" maxlength="60" rows="3" placeholder="Cuéntanos sobre ti..." style="flex:2;"></textarea>
+                        <button class="btn btn-secondary" style="padding:4px 12px;font-size:0.95em;align-self:flex-start;" onclick="editarCampo(this)">Editar</button>
+                    </div>
+                    <div class="about-desc">Puedes usar Markdown y los enlaces que quieras.</div>
+                </div>
+            </div>
+        </div>
+        <input type="file" id="avatarInput" accept="image/*" style="display:none;">
+    </div>
+    <div id="tab-content-horario" style="display:none;">
+        <div class="horario-container">
+            <h2 class="horario-title">Horario semanal</h2>
+            <form id="horario-form" class="horario-form horario-form-pro">
+                <div class="horario-field">
+                    <label for="hora-entrada">Hora de entrada:</label>
+                    <div class="horario-input-group">
+                        <input type="text" id="hora-entrada" placeholder="7:00" required autocomplete="off">
+                        <select id="ampm-entrada">
+                            <option value="am">AM</option>
+                            <option value="pm">PM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="horario-field">
+                    <label for="hora-salida">Hora de salida:</label>
+                    <div class="horario-input-group">
+                        <input type="text" id="hora-salida" placeholder="1:00" required autocomplete="off">
+                        <select id="ampm-salida">
+                            <option value="am">AM</option>
+                            <option value="pm">PM</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn horario-btn horario-btn-pro">Generar horario</button>
+            </form>
+            <div class="horario-color-picker" style="display:flex;align-items:center;gap:18px;justify-content:center;margin-bottom:18px;">
+                <span style="font-weight:700;color:#2563eb;font-size:1.08em;">Selecciona un color para marcar tus clases:</span>
+                <div id="color-palette" style="display:flex;gap:10px;">
+                    <div class="color-circle" data-color="#2563eb" title="Materia 1" style="background:#2563eb;"></div>
+                    <div class="color-circle" data-color="#22a06b" title="Materia 2" style="background:#22a06b;"></div>
+                    <div class="color-circle" data-color="#f59e42" title="Materia 3" style="background:#f59e42;"></div>
+                    <div class="color-circle" data-color="#e53935" title="Materia 4" style="background:#e53935;"></div>
+                    <div class="color-circle" data-color="#a259e4" title="Materia 5" style="background:#a259e4;"></div>
+                </div>
+            </div>
+            <div class="horario-table-wrap">
+                <table class="horario-table" id="tabla-horario">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Lunes</th>
+                            <th>Martes</th>
+                            <th>Miércoles</th>
+                            <th>Jueves</th>
+                            <th>Viernes</th>
+                            <th>Sábado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Filas generadas por JS -->
+                    </tbody>
+                </table>
+            </div>
+            <p class="horario-hint">
+                Selecciona tu hora de entrada y salida para ver tu horario.
+            </p>
+        </div>
+    </div>
+    <script>
+    // PESTAÑAS
+    function mostrarTab(tab) {
+        document.getElementById('tab-personal').classList.remove('active');
+        document.getElementById('tab-horario').classList.remove('active');
+        document.getElementById('tab-content-personal').style.display = 'none';
+        document.getElementById('tab-content-horario').style.display = 'none';
+        if(tab === 'personal') {
+            document.getElementById('tab-personal').classList.add('active');
+            document.getElementById('tab-content-personal').style.display = '';
+        } else {
+            document.getElementById('tab-horario').classList.add('active');
+            document.getElementById('tab-content-horario').style.display = '';
+        }
+    }
+
+    // Botón X para volver a la sidebar
+    document.getElementById('closeBtn').addEventListener('click', function() {
+        if (window.parent !== window && window.parent.document.getElementById('main-iframe')) {
+            window.parent.document.getElementById('main-iframe').src = 'mapa.html';
+        } else {
+            window.location.href = 'sidebar.html';
+        }
+    });
+
+    // Cargar datos del usuario en los campos del formulario (incluyendo "Sobre mí")
+    fetch('https://usm-proyecto.onrender.com/user-info', {
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('nombre').value = data.nombre || '';
+        document.getElementById('apellido').value = data.apellido || '';
+        document.getElementById('correo').value = data.email || '';
+        document.getElementById('telefono').value = data.telefono || '';
+        document.getElementById('facultad').value = data.facultad || '';
+        document.getElementById('carrera').value = data.carrera || '';
+        document.getElementById('direccion').value = data.direccion || '';
+        document.getElementById('aboutMe').value = data.about || '';
+        document.getElementById('miniNombre').textContent = data.nombre || '';
+        document.getElementById('miniAbout').textContent = data.about || '';
+        if (data.avatar_url && document.getElementById('miniAvatar')) {
+          document.getElementById('miniAvatar').src = data.avatar_url;
+        }
+        // Todos los campos editables readonly al cargar
+        ['nombre','apellido','correo','telefono','direccion','aboutMe'].forEach(id=>{
+          const el = document.getElementById(id);
+          if(el) el.setAttribute('readonly', true);
+        });
+    });
+
+    // Cambia el color de la X según el fondo
+    function actualizarColorX() {
+        const closeBtn = document.getElementById('closeBtn');
+        const hero = document.querySelector('.hero');
+        const heroRect = hero.getBoundingClientRect();
+        const btnRect = closeBtn.getBoundingClientRect();
+        if (btnRect.top < heroRect.bottom) {
+            closeBtn.style.color = '#fff';
+        } else {
+            closeBtn.style.color = '#23272a';
+        }
+    }
+    window.addEventListener('scroll', actualizarColorX);
+    window.addEventListener('resize', actualizarColorX);
+    window.addEventListener('DOMContentLoaded', actualizarColorX);
+
+    // Función para editar campos
+    function editarCampo(btn) {
+        const input = btn.parentElement.querySelector('input, textarea');
+        if (btn.textContent === 'Editar') {
+            input.removeAttribute('readonly');
+            input.focus();
+            btn.textContent = 'Aceptar';
+            btn.classList.remove('btn-secondary');
+            btn.classList.add('btn-danger');
+            btn.style.background = '#e53935';
+            btn.style.color = '#fff';
+        } else {
+            input.setAttribute('readonly', true);
+            btn.textContent = 'Editar';
+            btn.classList.remove('btn-danger');
+            btn.classList.add('btn-secondary');
+            btn.style.background = '';
+            btn.style.color = '';
+            // Guardar el cambio en la base de datos
+            let campo = input.id === 'aboutMe' ? 'about' : input.id;
+            const valor = input.value;
+            fetch('https://usm-proyecto.onrender.com/update-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ [campo]: valor })
+            }).then(res => res.json())
+              .then(data => {
+                if (campo === 'nombre') {
+                    document.getElementById('miniNombre').textContent = valor;
+                    if (window.parent && window.parent.document.getElementById('sidebar-username')) {
+                        window.parent.document.getElementById('sidebar-username').textContent = valor;
+                    }
+                }
+                if (campo === 'about') {
+                    document.getElementById('miniAbout').textContent = valor;
+                }
+                if (campo === 'direccion') {
+                    if (window.parent && window.parent.document.getElementById('sidebar-direccion')) {
+                        window.parent.document.getElementById('sidebar-direccion').textContent = valor;
+                    }
+                }
+              });
+        }
+    }
+
+    // Avatar: cambiar y eliminar
+    document.getElementById('changeAvatarBtn').onclick = function() {
+        document.getElementById('avatarInput').click();
+    };
+    document.getElementById('avatarInput').onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            document.getElementById('miniAvatar').src = ev.target.result;
+        };
+        reader.readAsDataURL(file);
+        // Aquí puedes agregar la lógica para subir el avatar al servidor si lo deseas
+    };
+    document.getElementById('removeAvatarBtn').onclick = function() {
+        document.getElementById('miniAvatar').src = 'user_img.png';
+        // Aquí puedes agregar la lógica para eliminar el avatar en el servidor si lo deseas
+    };
+
+    const INTERVALO_MIN = 45; // minutos
+
+    function pad(n) { return n < 10 ? '0'+n : n; }
+    function to12h(h, m) {
+        let suf = h >= 12 ? 'PM' : 'AM';
+        let h12 = h % 12;
+        if (h12 === 0) h12 = 12;
+        return `${pad(h12)}:${pad(m)}${suf}`;
+    }
+
+    // --- CELDAS EDITABLES ---
+    let horarioData = {}; // Guarda el contenido de cada celda
+
+    // Días de la semana en el orden de la tabla
+    const DIAS = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+
+    // Convierte minutos a string HH:MM
+    function minToHoraStr(min) {
+        let h = Math.floor(min / 60);
+        let m = min % 60;
+        return (h < 10 ? '0' : '') + h + ':' + (m < 10 ? '0' : '') + m;
+    }
+
+    // Obtiene el resumen de horario (inicio y fin por día)
+    function obtenerResumenHorario(horaIni, horaFin) {
+        let [h1, m1] = horaIni;
+        let [h2, m2] = horaFin;
+        let start = h1 * 60 + m1;
+        let end = h2 * 60 + m2;
+        let filas = Math.floor((end - start) / INTERVALO_MIN);
+        let resumen = {};
+        for (let d = 0; d < 6; d++) {
+            let primero = null, ultimo = null;
+            for (let f = 0; f < filas; f++) {
+                let key = `${f}-${d}`;
+                let celda = horarioData[key];
+                if (celda && (celda.punto || (celda.texto && celda.texto.trim() !== ''))) {
+                    let minIni = start + f * INTERVALO_MIN;
+                    let minFin = minIni + INTERVALO_MIN;
+                    if (primero === null || minIni < primero) primero = minIni;
+                    if (ultimo === null || minFin > ultimo) ultimo = minFin;
+                }
+            }
+            resumen[DIAS[d]] = {
+                inicio: primero !== null ? minToHoraStr(primero) : null,
+                fin: ultimo !== null ? minToHoraStr(ultimo) : null
+            };
+        }
+        return resumen;
+    }
+
+    // Función para guardar el horario en el backend
+    function guardarHorarioEnBD(horaIni, horaFin) {
+        const resumen = obtenerResumenHorario(horaIni, horaFin);
+        // Obtén los valores de los inputs
+        const hora_entrada = document.getElementById('hora-entrada').value;
+        const ampm_entrada = document.getElementById('ampm-entrada').value;
+        const hora_salida = document.getElementById('hora-salida').value;
+        const ampm_salida = document.getElementById('ampm-salida').value;
+
+        fetch('https://usm-proyecto.onrender.com/update-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({
+                horario_tabla: horarioData,
+                horario_resumido: resumen,
+                hora_entrada,
+                ampm_entrada,
+                hora_salida,
+                ampm_salida
+            })
+        })
+        .then(res => res.json())
+        .then(data => {
+            // Puedes mostrar un mensaje de éxito si quieres
+        });
+    }
+
+    // Modifica la función generarTablaHorario para guardar después de cada cambio
+    function generarTablaHorario(horaIni, horaFin) {
+        const tbody = document.querySelector('#tabla-horario tbody');
+        tbody.innerHTML = '';
+        let [h1, m1] = horaIni;
+        let [h2, m2] = horaFin;
+        let start = h1*60 + m1;
+        let end = h2*60 + m2;
+        if (end <= start) return;
+        let alt = false;
+        let fila = 0;
+        for (let t = start; t < end; t += INTERVALO_MIN, fila++) {
+            let hIni = Math.floor(t/60), mIni = t%60;
+            let hFin = Math.floor((t+INTERVALO_MIN)/60), mFin = (t+INTERVALO_MIN)%60;
+            if (t+INTERVALO_MIN > end) break;
+            let horaTxt = `${to12h(hIni, mIni)} - ${to12h(hFin, mFin)}`;
+            let tr = document.createElement('tr');
+            if (alt) tr.className = 'alt';
+            alt = !alt;
+            let tdHora = document.createElement('td');
+            tdHora.className = 'hora';
+            tdHora.innerHTML = `
+                <span class="hora-inicio">${to12h(hIni, mIni)}</span>
+                <br>
+                <span class="hora-fin">${to12h(hFin, mFin)}</span>
+            `;
+            tr.appendChild(tdHora);
+            for (let d = 0; d < 6; d++) {
+                let td = document.createElement('td');
+                td.style.cursor = 'pointer';
+                td.dataset.fila = fila;
+                td.dataset.dia = d;
+                let key = `${fila}-${d}`;
+                let celda = horarioData[key] || {};
+                if (celda.punto) {
+                    td.innerHTML = `<div class="celda-punto"><span class="punto-color" style="background:${celda.punto};"></span></div>`;
+                } else if (celda.texto) {
+                    td.innerHTML = celda.texto;
+                } else {
+                    td.innerHTML = '';
+                }
+                td.onclick = function(e) {
+                    if (e.detail === 2) {
+                        editarCeldaHorario(td, key);
+                        return;
+                    }
+                    let celda = horarioData[key] || {};
+                    if (celda.punto) {
+                        delete celda.punto;
+                        if (celda.texto) {
+                            td.innerHTML = celda.texto;
+                        } else {
+                            td.innerHTML = '';
+                        }
+                    } else if (colorSeleccionado) {
+                        celda.punto = colorSeleccionado;
+                        td.innerHTML = `<div class="celda-punto"><span class="punto-color" style="background:${colorSeleccionado};"></span></div>`;
+                    }
+                    horarioData[key] = celda;
+                    guardarHorarioEnBD(horaIni, horaFin); // <--- Guarda cada vez que se marca/desmarca
+                };
+                tr.appendChild(td);
+            }
+            tbody.appendChild(tr);
+        }
+        
+    }
+
+    // Modifica guardarCeldaHorario para guardar después de editar texto
+    function guardarCeldaHorario(td, textarea, key) {
+        let val = textarea.value.trim();
+        let celda = horarioData[key] || {};
+        celda.texto = val ? val.replace(/\n/g, '<br>') : '';
+        if (celda.punto) {
+            td.innerHTML = `<div class="celda-punto"><span class="punto-color" style="background:${celda.punto};"></span></div>`;
+        } else {
+            td.innerHTML = celda.texto;
+        }
+        horarioData[key] = celda;
+        td.onclick = function(e) {
+            if (e.detail === 2) {
+                editarCeldaHorario(td, key);
+                return;
+            }
+            let celda = horarioData[key] || {};
+            if (celda.punto) {
+                delete celda.punto;
+                if (celda.texto) {
+                    td.innerHTML = celda.texto;
+                } else {
+                    td.innerHTML = '';
+                }
+            } else if (colorSeleccionado) {
+                celda.punto = colorSeleccionado;
+                td.innerHTML = `<div class="celda-punto"><span class="punto-color" style="background:${colorSeleccionado};"></span></div>`;
+            }
+            horarioData[key] = celda;
+            // Guarda después de cada cambio
+            let horaIni = parseHora(document.getElementById('hora-entrada').value, document.getElementById('ampm-entrada'));
+            let horaFin = parseHora(document.getElementById('hora-salida').value, document.getElementById('ampm-salida'));
+            if (horaIni && horaFin) guardarHorarioEnBD(horaIni, horaFin);
+        };
+        // Guarda después de editar texto
+        let horaIni = parseHora(document.getElementById('hora-entrada').value, document.getElementById('ampm-entrada'));
+        let horaFin = parseHora(document.getElementById('hora-salida').value, document.getElementById('ampm-salida'));
+        if (horaIni && horaFin) guardarHorarioEnBD(horaIni, horaFin);
+    }
+
+    // Al cargar la página, puedes cargar el horario guardado (opcional)
+    window.addEventListener('DOMContentLoaded', ()=>{
+        fetch('https://usm-proyecto.onrender.com/user-info', { credentials: 'include' })
+        .then(res => res.json())
+        .then(data => {
+            if (data.horario_tabla) {
+                horarioData = data.horario_tabla;
+            }
+            // Usa los valores guardados o los de defecto
+            document.getElementById('hora-entrada').value = data.hora_entrada || '7:00';
+            document.getElementById('ampm-entrada').value = data.ampm_entrada || 'am';
+            document.getElementById('hora-salida').value = data.hora_salida || '1:00';
+            document.getElementById('ampm-salida').value = data.ampm_salida || 'pm';
+
+            // Convierte a formato [hora, minuto]
+            function parseHoraSimple(str, ampm) {
+                let [h, m] = str.split(':').map(Number);
+                if (ampm === 'pm' && h < 12) h += 12;
+                if (ampm === 'am' && h === 12) h = 0;
+                return [h, m || 0];
+            }
+            const horaIni = parseHoraSimple(document.getElementById('hora-entrada').value, document.getElementById('ampm-entrada').value);
+            const horaFin = parseHoraSimple(document.getElementById('hora-salida').value, document.getElementById('ampm-salida').value);
+
+            generarTablaHorario(horaIni, horaFin);
+        });
+    });
+
+    // Llenar las opciones de parada con las paradas de la API de rutas
+    fetch('https://usm-proyecto.onrender.com/api/rutas')
+      .then(res => res.json())
+      .then(rutas => {
+        const paradasSet = new Set();
+        rutas.forEach(ruta => {
+          if (ruta.nombre) paradasSet.add(ruta.nombre.trim());
+        });
+        const paradaSelect = document.getElementById('parada-bus');
+        // Elimina las opciones previas (excepto la de "Seleccione una parada...")
+        paradaSelect.innerHTML = '<option value="" disabled selected>Seleccione una parada...</option>';
+        // Agrega las paradas de la API
+        Array.from(paradasSet).sort().forEach(parada => {
+          const opt = document.createElement('option');
+          opt.value = parada;
+          opt.textContent = parada;
+          paradaSelect.appendChild(opt);
+        });
+        // Una vez cargadas las opciones, selecciona la parada guardada si existe
+        fetch('https://usm-proyecto.onrender.com/user-info', {
+          credentials: 'include'
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data.parada_bus) {
+            paradaSelect.value = data.parada_bus;
+          }
+        });
+      });
+
+    document.getElementById('form-parada').addEventListener('submit', function(e){
+        e.preventDefault();
+        const parada = document.getElementById('parada-bus').value;
+        fetch('https://usm-proyecto.onrender.com/update-user', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify({ parada_bus: parada })
+        })
+        .then(res => res.json())
+        .then(data => {
+            document.getElementById('encuesta-msg').textContent = '¡Gracias por tu respuesta!';
+        })
+        .catch(() => {
+            document.getElementById('encuesta-msg').textContent = 'Error al guardar la respuesta.';
+        });
+    });
+
+    // Color seleccionado por el usuario
+    let colorSeleccionado = null;
+
+    // Manejo de selección de color
+    document.querySelectorAll('.color-circle').forEach(circle => {
+        circle.addEventListener('click', function() {
+            document.querySelectorAll('.color-circle').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            colorSeleccionado = this.getAttribute('data-color');
+        });
+    });
+    // Por defecto selecciona el primer color
+    window.addEventListener('DOMContentLoaded', ()=>{
+        const firstColor = document.querySelector('.color-circle');
+        if(firstColor) {
+            firstColor.classList.add('selected');
+            colorSeleccionado = firstColor.getAttribute('data-color');
+        }
+    });
+
+    document.getElementById('horario-form').addEventListener('submit', function(e){
+        e.preventDefault();
+        let entradaArr = parseHora(
+            document.getElementById('hora-entrada').value,
+            document.getElementById('ampm-entrada')
+        );
+        let salidaArr = parseHora(
+            document.getElementById('hora-salida').value,
+            document.getElementById('ampm-salida')
+        );
+        let errorMsg = document.getElementById('horario-error');
+        if (!errorMsg) {
+            errorMsg = document.createElement('div');
+            errorMsg.id = 'horario-error';
+            errorMsg.style.color = '#e53935';
+            errorMsg.style.fontWeight = '600';
+            errorMsg.style.margin = '10px 0 0 0';
+            errorMsg.style.textAlign = 'center';
+            document.getElementById('horario-form').parentNode.insertBefore(errorMsg, document.getElementById('horario-form').nextSibling);
+        }
+        if (!entradaArr || !salidaArr) {
+            errorMsg.textContent = 'Formato de hora inválido. Ej: 7, 7:00, 13, 1pm, 1:45pm';
+            return;
+        }
+        let start = entradaArr[0]*60 + entradaArr[1];
+        let end = salidaArr[0]*60 + salidaArr[1];
+        if (end <= start) {
+            errorMsg.textContent = 'La hora de salida debe ser mayor que la hora de entrada.';
+            return;
+        } else {
+            errorMsg.textContent = '';
+        }
+        generarTablaHorario(entradaArr, salidaArr);
+
+        // --- GUARDA EL RANGO DE HORAS PERSONALIZADO ---
+        guardarHorarioEnBD(entradaArr, salidaArr);
+    });
+
+    function parseHora(str, ampmSelect) {
+        str = str.trim().toLowerCase();
+        let ampm = null;
+        if (str.endsWith('am')) { ampm = 'am'; str = str.replace('am','').trim(); }
+        if (str.endsWith('pm')) { ampm = 'pm'; str = str.replace('pm','').trim(); }
+        let match = str.match(/^(\d{1,2})(?::(\d{1,2}))?$/);
+        if (!match) return null;
+        let h = parseInt(match[1],10);
+        let m = match[2] ? parseInt(match[2],10) : 0;
+        if (ampmSelect && ampmSelect.style.display !== 'none') {
+            ampm = ampmSelect.value;
+        }
+        if (ampm) {
+            if (h === 12) h = (ampm === 'am') ? 0 : 12;
+            else if (ampm === 'pm') h += 12;
+        }
+        if (h < 0 || h > 23 || m < 0 || m > 59) return null;
+        return [h, m];
+    }
+    </script>
+</body>
+</html>
