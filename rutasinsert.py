@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-client = MongoClient("mongodb+srv://padilla31661983:<db_password>@usm.qh90qid.mongodb.net/?retryWrites=true&w=majority&appName=USM")
+client = MongoClient("mongodb+srv://angel:angelito01@usm.2jhpojj.mongodb.net/?retryWrites=true&w=majority&appName=USM")
 db = client['USM']
 rutas = db.rutas
 

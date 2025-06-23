@@ -41,10 +41,66 @@ function toggleInfoPanel() {
 let currentMarker = null;
 let trackingInterval = null;
 let userMarker = null;
+let busMarkers = {}; // Objeto para almacenar los marcadores de los buses
+
+// Función para crear un marcador de bus personalizado
+function addBusMarker(coordinates) {
+    const el = document.createElement('div');
+    el.className = 'bus-marker';
+    // Icono de bus SVG (puedes personalizar el color en `fill`)
+    el.style.backgroundImage = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="36" height="36"><path fill="%23FF6F00" d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11C5.84 5 5.28 5.42 5.08 6.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/></svg>')`;
+    el.style.width = '36px';
+    el.style.height = '36px';
+    el.style.backgroundSize = '100%';
+    el.style.cursor = 'pointer';
+
+    return new mapboxgl.Marker(el)
+        .setLngLat(coordinates)
+        .addTo(map);
+}
+
+// Función para actualizar las ubicaciones de los buses en el mapa
+async function updateBusLocations() {
+    try {
+        const response = await fetch('https://usm-proyecto.onrender.com/api/bus-locations');
+        if (!response.ok) return;
+        
+        const activeBuses = await response.json();
+        const activeBusIds = new Set();
+
+        activeBuses.forEach(bus => {
+            const busId = bus.driver_id;
+            activeBusIds.add(busId);
+            const coordinates = bus.location;
+
+            if (busMarkers[busId]) {
+                busMarkers[busId].setLngLat(coordinates);
+            } else {
+                const newMarker = addBusMarker(coordinates);
+                newMarker.setPopup(new mapboxgl.Popup({ offset: 25 }).setText(`Conductor: ${bus.driver_name}`));
+                busMarkers[busId] = newMarker;
+            }
+        });
+
+        // Eliminar marcadores de buses inactivos
+        Object.keys(busMarkers).forEach(busId => {
+            if (!activeBusIds.has(busId)) {
+                busMarkers[busId].remove();
+                delete busMarkers[busId];
+            }
+        });
+    } catch (error) {
+        console.error('Fallo al actualizar ubicaciones de buses:', error);
+    }
+}
 
 // Activar automáticamente la geolocalización al cargar el mapa
 map.on('load', () => {
   geolocateControl.trigger();
+
+  // Carga inicial de buses y actualización periódica
+  updateBusLocations();
+  setInterval(updateBusLocations, 10000); // Actualiza cada 10 segundos
 
   // --- BLOQUE PARA TRAZAR LA RUTA DESDE LA UBICACIÓN DEL USUARIO ---
   const destinoNombre = localStorage.getItem('showRouteTo');
@@ -435,46 +491,4 @@ if (destinoNombre) {
         geolocateControl.trigger();
       }
     });
-}
-
-// --- MARCADORES DE CONDUCTORES EN TIEMPO REAL ---
-let conductorMarkers = {};
-function updateConductoresOnMap() {
-  fetch('/api/conductores-locations')
-    .then(res => res.json())
-    .then(conductores => {
-      // Elimina marcadores viejos
-      Object.values(conductorMarkers).forEach(marker => marker.remove());
-      conductorMarkers = {};
-      conductores.forEach(c => {
-        if (c.lat && c.lng) {
-          let marker = new mapboxgl.Marker({ color: 'red' })
-            .setLngLat([c.lng, c.lat])
-            .setPopup(new mapboxgl.Popup().setText('Conductor'))
-            .addTo(map);
-          conductorMarkers[c.user_id] = marker;
-        }
-      });
-    });
-}
-setInterval(updateConductoresOnMap, 5000);
-map.on('load', updateConductoresOnMap);
-
-// --- SI EL USUARIO ES CONDUCTOR, REPORTA SU UBICACIÓN ---
-if (window.USER_ROLE === 'conductor' && window.USER_ID) {
-  setInterval(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function(position) {
-        fetch('/api/conductor-location', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: window.USER_ID,
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          })
-        });
-      });
-    }
-  }, 5000);
 }

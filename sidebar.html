@@ -58,6 +58,12 @@
                         <span>Notification</span>
                     </a>
                 </li>
+                <div class="nav-item" id="driver-mode-container" style="display: none;">
+                    <a href="#" id="driver-mode-toggle">
+                        <i class='bx bxs-steering-wheel'></i>
+                        <span>Modo Conductor</span>
+                    </a>
+                </div>
                 <li class="menu-item menu-item-static">
                     <a href="#" class="menu-link" data-page="settings.html" id="setting-link">
                         <i class='bx bx-cog'></i>
@@ -95,6 +101,9 @@
     } else {
       sidebarName.textContent = 'Usuario';
     }
+    if (data.is_driver) {
+        document.getElementById('driver-mode-container').style.display = 'block';
+    }
     // Si tienes avatar:
     const sidebarAvatar = document.getElementById('sidebar-avatar');
     if (sidebarAvatar) {
@@ -119,6 +128,45 @@
         });
         window.location.href = 'index.html'; // Cambiado de 'login.html' a 'index.html'
       });
+
+      let locationWatcher = null;
+      const driverToggleButton = document.getElementById('driver-mode-toggle');
+
+      if(driverToggleButton) {
+        driverToggleButton.addEventListener('click', (e) => {
+            e.preventDefault();
+            const toggleLink = driverToggleButton.closest('a');
+            if (locationWatcher) {
+                navigator.geolocation.clearWatch(locationWatcher);
+                locationWatcher = null;
+                toggleLink.style.color = ''; // Reset color
+                alert('Modo Conductor desactivado.');
+            } else {
+                if (!navigator.geolocation) {
+                    alert('Geolocalización no es soportada por tu navegador.');
+                    return;
+                }
+                locationWatcher = navigator.geolocation.watchPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        fetch('https://usm-proyecto.onrender.com/update-driver-location', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include',
+                            body: JSON.stringify({ latitude, longitude })
+                        }).catch(err => console.error('Error al enviar ubicación:', err));
+                    },
+                    (error) => {
+                        console.error('Error de geolocalización:', error);
+                        alert('No se pudo obtener tu ubicación. Asegúrate de tener los permisos activados.');
+                    },
+                    { enableHighAccuracy: true }
+                );
+                toggleLink.style.color = '#22c55e'; // Green to indicate it's active
+                alert('Modo Conductor activado. Tu ubicación se está compartiendo.');
+            }
+        });
+      }
 
       // Punto verde sobre la campana si hay notificaciones sin leer
       function actualizarPuntoNotificacion() {

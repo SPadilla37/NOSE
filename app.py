@@ -8,7 +8,7 @@ import requests
 import os
 from bson import ObjectId
 from flask import send_from_directory
-from datetime import datetime
+from datetime import datetime, timedelta
 
 app = Flask(__name__)
 app.secret_key = 'TU_SECRETO_AQUI'  # Cambia esto por una clave secreta segura
@@ -16,7 +16,7 @@ CORS(app, supports_credentials=True)
 
 # Cambia la configuración de sesión:
 app.config['SESSION_TYPE'] = 'mongodb'
-app.config['SESSION_MONGODB'] = MongoClient("mongodb+srv://padilla31661983:<db_password>@usm.qh90qid.mongodb.net/?retryWrites=true&w=majority&appName=USM")
+app.config['SESSION_MONGODB'] = MongoClient("mongodb+srv://angel:angelito01@usm.2jhpojj.mongodb.net/?retryWrites=true&w=majority&appName=USM")
 app.config['SESSION_MONGODB_DB'] = 'USM'
 app.config['SESSION_MONGODB_COLLECT'] = 'sessions'
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
@@ -33,8 +33,10 @@ app.config['MAIL_DEFAULT_SENDER'] = 'tu_correo@gmail.com'
 
 mail = Mail(app)
 
-client = MongoClient("mongodb+srv://padilla31661983:<db_password>@usm.qh90qid.mongodb.net/?retryWrites=true&w=majority&appName=USM")
+client = MongoClient("mongodb+srv://angel:angelito01@usm.2jhpojj.mongodb.net/?retryWrites=true&w=majority&appName=USM")
+db = client.get_database("USM")
 users_collection = db.usuarios
+driver_locations_collection = db.driver_locations # Nueva colección para ubicaciones de buses
 
 FACULTADES = {
     "ingenieria-arquitectura": [
@@ -210,6 +212,7 @@ def user_info():
         'about': user.get('about', ''),
         'parada_bus': user.get('parada_bus', ''),
         'horario_tabla': user.get('horario_tabla', {}),
+        'is_driver': user.get('is_driver', False), # Añadir este campo
         'horario_resumido': user.get('horario_resumido', {}),
         'hora_entrada': user.get('hora_entrada', ''),
         'ampm_entrada': user.get('ampm_entrada', ''),
@@ -263,6 +266,59 @@ def update_user():
 
     users_collection.update_one({'_id': user['_id']}, {'$set': update_data})
     return jsonify({'success': True})
+
+@app.route('/update-driver-location', methods=['POST'])
+def update_driver_location():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'error': 'No autenticado'}), 401
+
+    user = users_collection.find_one({'_id': ObjectId(user_id)})
+    if not user or not user.get('is_driver'):
+        return jsonify({'error': 'No autorizado. Solo los conductores pueden actualizar la ubicación.'}), 403
+
+    data = request.json
+    latitude = data.get('latitude')
+    longitude = data.get('longitude')
+
+    if latitude is None or longitude is None:
+        return jsonify({'error': 'Faltan datos de ubicación'}), 400
+
+    driver_locations_collection.update_one(
+        {'driver_id': ObjectId(user_id)},
+        {
+            '$set': {
+                'location': {
+                    'type': 'Point',
+                    'coordinates': [longitude, latitude]
+                },
+                'last_updated': datetime.utcnow(),
+                'driver_name': user.get('nombre', 'Conductor')
+            }
+        },
+        upsert=True
+    )
+    return jsonify({'success': True, 'message': 'Ubicación actualizada'})
+
+@app.route('/api/bus-locations', methods=['GET'])
+def get_bus_locations():
+    # Buscar buses actualizados en los últimos 5 minutos
+    five_minutes_ago = datetime.utcnow() - timedelta(minutes=5)
+    
+    active_buses = driver_locations_collection.find({
+        'last_updated': {'$gte': five_minutes_ago}
+    })
+    
+    locations = []
+    for bus in active_buses:
+        locations.append({
+            'driver_id': str(bus['driver_id']),
+            'driver_name': bus.get('driver_name', 'Conductor'),
+            'location': bus['location']['coordinates'], # [lng, lat]
+            'last_updated': bus['last_updated'].isoformat()
+        })
+        
+    return jsonify(locations)
 
 @app.route('/upload-avatar', methods=['POST'])
 def upload_avatar():
@@ -355,35 +411,6 @@ def confirmar_asistencia():
 
     return jsonify({'success': True, 'nuevo_total': nuevo_valor})
 
-# --- ENDPOINT: Guardar ubicación de conductor ---
-@app.route('/api/conductor-location', methods=['POST'])
-def update_conductor_location():
-    data = request.json
-    user_id = data.get('user_id')
-    lat = data.get('lat')
-    lng = data.get('lng')
-    if not user_id or lat is None or lng is None:
-        return jsonify({'error': 'Datos incompletos'}), 400
-
-    # Verifica que el usuario sea conductor
-    user = users_collection.find_one({'_id': ObjectId(user_id), 'rol': 'conductor'})
-    if not user:
-        return jsonify({'error': 'No autorizado'}), 403
-
-    db.conductor_locations.update_one(
-        {'user_id': user_id},
-        {'$set': {'lat': lat, 'lng': lng, 'timestamp': datetime.utcnow()}},
-        upsert=True
-    )
-    return jsonify({'success': True})
-
-# --- ENDPOINT: Obtener ubicaciones de todos los conductores ---
-@app.route('/api/conductores-locations', methods=['GET'])
-def get_conductores_locations():
-    conductores = list(users_collection.find({'rol': 'conductor'}))
-    ids = [str(c['_id']) for c in conductores]
-    ubicaciones = list(db.conductor_locations.find({'user_id': {'$in': ids}}, {'_id': 0}))
-    return jsonify(ubicaciones)
 
 if __name__ == '__main__':
     app.run(debug=True)
